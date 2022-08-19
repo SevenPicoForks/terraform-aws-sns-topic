@@ -1,49 +1,49 @@
 output "sns_topic" {
-  value       = local.enabled ? aws_sns_topic.this[0] : null
+  value       = one(aws_sns_topic.this[*])
   description = "SNS topic."
 }
 
 output "sns_topic_name" {
-  value       = local.enabled ? local.sqs_queue_name : null
+  value       = local.sqs_queue_name
   description = "SNS topic name."
 }
 
 output "sns_topic_id" {
-  value       = local.enabled ? aws_sns_topic.this[0].id : null
+  value       = join("", aws_sns_topic.this[*].id)
   description = "SNS topic ID."
 }
 
 output "sns_topic_arn" {
-  value       = local.enabled ? aws_sns_topic.this[0].arn : null
+  value       = join("", aws_sns_topic.this[*].arn)
   description = "SNS topic ARN."
 }
 
 output "sns_topic_owner" {
-  value       = local.enabled ? aws_sns_topic.this[0].owner : null
+  value       = join("", aws_sns_topic.this[*].owner)
   description = "SNS topic owner."
 }
 
 output "aws_sns_topic_subscriptions" {
-  value       = local.enabled ? aws_sns_topic_subscription.this : null
+  value       = aws_sns_topic_subscription.this[*]
   description = "SNS topic subscription."
 }
 
 output "dead_letter_queue_url" {
   description = "The URL for the created dead letter SQS queue."
-  value       = local.sqs_dlq_enabled ? aws_sqs_queue.dead_letter_queue[0].url : null
+  value       = join("", aws_sqs_queue.dead_letter_queue[*].url)
 }
 
 output "dead_letter_queue_id" {
   description = "The ID for the created dead letter queue. Same as the URL."
-  value       = local.sqs_dlq_enabled ? aws_sqs_queue.dead_letter_queue[0].id : null
+  value       = join("", aws_sqs_queue.dead_letter_queue[*].id)
 }
 
 output "dead_letter_queue_name" {
   description = "The name for the created dead letter queue."
-  value       = local.sqs_dlq_enabled ? local.sqs_queue_name : null
+  value       = local.sqs_queue_name
 }
 
 output "dead_letter_queue_arn" {
   description = "The ARN of the dead letter queue."
-  value       = local.sqs_dlq_enabled ? aws_sqs_queue.dead_letter_queue[0].arn : null
+  value       = join("", aws_sqs_queue.dead_letter_queue[*].arn)
 }
