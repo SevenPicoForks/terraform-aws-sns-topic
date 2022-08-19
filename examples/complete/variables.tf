@@ -1,7 +1,3 @@
-variable "region" {
-  type        = string
-  description = "AWS region"
-}
 
 variable "allowed_aws_services_for_sns_published" {
   type        = list(string)

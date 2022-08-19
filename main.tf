@@ -1,10 +1,10 @@
 locals {
-  enabled = module.this.enabled
+  enabled = module.context.enabled
 
   kms_key_id = local.enabled && var.encryption_enabled && var.kms_master_key_id != "" ? var.kms_master_key_id : ""
 
-  sns_topic_name = var.fifo_topic ? "${module.this.id}.fifo" : module.this.id
-  sqs_queue_name = var.fifo_queue_enabled ? "${module.this.id}.fifo" : module.this.id
+  sns_topic_name = var.fifo_topic ? "${module.context.id}.fifo" : module.context.id
+  sqs_queue_name = var.fifo_queue_enabled ? "${module.context.id}.fifo" : module.context.id
 
   sqs_dlq_enabled = local.enabled && var.sqs_dlq_enabled
 
@@ -15,13 +15,13 @@ resource "aws_sns_topic" "this" {
   count = local.enabled ? 1 : 0
 
   name                        = local.sns_topic_name
-  display_name                = replace(module.this.id, ".", "-") # dots are illegal in display names and for .fifo topics required as part of the name (AWS SNS by design)
+  display_name                = replace(module.context.id, ".", "-") # dots are illegal in display names and for .fifo topics required as part of the name (AWS SNS by design)
   kms_master_key_id           = local.kms_key_id
   delivery_policy             = var.delivery_policy
   fifo_topic                  = var.fifo_topic
   content_based_deduplication = var.content_based_deduplication
 
-  tags = merge(module.this.tags, {
+  tags = merge(module.context.tags, {
     Name = local.sns_topic_name
   })
 }
@@ -85,7 +85,7 @@ resource "aws_sqs_queue" "dead_letter_queue" {
   kms_master_key_id                 = var.sqs_queue_kms_master_key_id
   kms_data_key_reuse_period_seconds = var.sqs_queue_kms_data_key_reuse_period_seconds
 
-  tags = merge(module.this.tags, {
+  tags = merge(module.context.tags, {
     Name = local.sqs_queue_name
   })
 }

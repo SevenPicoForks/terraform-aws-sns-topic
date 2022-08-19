@@ -11,5 +11,5 @@ module "sns" {
   fifo_topic         = true
   fifo_queue_enabled = true
 
-  context = module.this.context
+  context = module.context.self
 }
